@@ -8,7 +8,7 @@
 
   
   <!--================ Hero sm Banner start =================-->      
-  @include('theme.partials.hero',['title'=>'Blog details'])
+  @include('theme.partials.hero',['title'=>$blog->name])
   <!--================ Hero sm Banner end =================-->     
 
   <!--================ Start Blog Post Area =================-->
@@ -17,14 +17,14 @@
       <div class="row">
         <div class="col-lg-8">
             <div class="main_blog_details">
-                <img class="img-fluid" src="{{asset('assets')}}/img/blog/blog4.png" alt="">
-                <a href="#"><h4>Cartridge Is Better Than Ever <br /> A Discount Toner</h4></a>
+                <img class="w-100 img-fluid" src="{{asset('storage')}}/blogs/{{$blog->image}}" alt="">
+                <a href="#"><h4>{{$blog->name}}</h4></a>
                 <div class="user_details">
                   <div class="float-right mt-sm-0 mt-3">
                     <div class="media">
                       <div class="media-body">
-                        <h5>Mark wiens</h5>
-                        <p>12 Dec, 2017 11:21 am</p>
+                        <h5>{{$blog->user->name}}</h5>
+                        <p>{{$blog->created_at->format('d M Y')}}</p>
                       </div>
                       <div class="d-flex">
                         <img width="42" height="42" src="{{asset('assets')}}/img/avatar.png" alt="">
@@ -32,89 +32,80 @@
                     </div>
                   </div>
                 </div>
-                <p>MCSE boot camps have its supporters and its detractors. Some people do not understand why you should have to spend money on boot camp when you can get the MCSE study materials yourself at a fraction of the camp price. However, who has the willpower</p>
-                <p>MCSE boot camps have its supporters and its detractors. Some people do not understand why you should have to spend money on boot camp when you can get the MCSE study materials yourself at a fraction of the camp price. However, who has the willpower to actually sit through a self-imposed MCSE training. who has the willpower to actually sit through a self-imposed MCSE training.</p>
-                <p>MCSE boot camps have its supporters and its detractors. Some people do not understand why you should have to spend money on boot camp when you can get the MCSE study materials yourself at a fraction of the camp price. However, who has the willpower</p>
-                <p>MCSE boot camps have its supporters and its detractors. Some people do not understand why you should have to spend money on boot camp when you can get the MCSE study materials yourself at a fraction of the camp price. However, who has the willpower</p>
+                <p>{{$blog->description}}</p>
+               
               </div>
-          
-              <div class="comments-area">
-                  <h4>05 Comments</h4>
-                  <div class="comment-list">
-                      <div class="single-comment justify-content-between d-flex">
-                          <div class="user justify-content-between d-flex">
-                              <div class="thumb">
-                                  <img src="{{asset('assets')}}/img/avatar.png" width="50px">
-                              </div>
-                              <div class="desc">
-                                  <h5><a href="#">Emilly Blunt</a></h5>
-                                  <p class="date">December 4, 2017 at 3:12 pm </p>
-                                  <p class="comment">
-                                      Never say goodbye till the end comes!
-                                  </p>
-                              </div>
-                          </div>
+        
+              @if (count($blog->Comments)>0)
+          <div class="comments-area">
+            <h4>{{count($blog->Comments)}} Comments</h4>
+            @foreach ($blog->Comments as $com)
+            <div class="comment-list">
+              <div class="single-comment justify-content-between d-flex">
+                  <div class="user justify-content-between d-flex">
+                      <div class="thumb">
+                          <img src="{{asset('assets')}}/img/avatar.png" width="50px">
+                      </div>
+                      <div class="desc">
+                          <h5><a href="#">{{$com->name}}</a></h5>
+                          <p class="date">{{$com->created_at->format('d M Y')}}</p>
+                          <p class="comment">
+                            {{$com->message}}
+                          </p>
                       </div>
                   </div>
-                  <div class="comment-list">
-                      <div class="single-comment justify-content-between d-flex">
-                          <div class="user justify-content-between d-flex">
-                              <div class="thumb">
-                                  <img src="{{asset('assets')}}/img/avatar.png" width="50px">
-                              </div>
-                              <div class="desc">
-                                  <h5><a href="#">Maria Luna</a></h5>
-                                  <p class="date">December 4, 2017 at 3:12 pm </p>
-                                  <p class="comment">
-                                      Never say goodbye till the end comes!
-                                  </p>
-                              </div>
-                          </div>
-                      </div>
-                  </div>	
-                  <div class="comment-list">
-                      <div class="single-comment justify-content-between d-flex">
-                          <div class="user justify-content-between d-flex">
-                              <div class="thumb">
-                                  <img src="{{asset('assets')}}/img/avatar.png" width="50px">
-                              </div>
-                              <div class="desc">
-                                  <h5><a href="#">Ina Hayes</a></h5>
-                                  <p class="date">December 4, 2017 at 3:12 pm </p>
-                                  <p class="comment">
-                                      Never say goodbye till the end comes!
-                                  </p>
-                              </div>
-                          </div>
-                      </div>
-                  </div>                                        				
               </div>
+          </div>
+            @endforeach
+           
+                                        				
+          </div>
+         
+           
+          @endif
+            
 
               <div class="comment-form">
+
                   <h4>Leave a Reply</h4>
-                  <form>
-                      <div class="form-group form-inline">
+                  @if (session('comment_sr'))
+                  <div class="alert alert-success">
+                      {{ session('comment_sr') }}
+                  </div>
+              @endif
+                  <form action="{{route('comment')}}" method="POST">
+                    @csrf
+                    
+                    <input type="hidden" name="blog_id" value="{{$blog->id}}">
+                    <div class="form-group form-inline">
                         <div class="form-group col-lg-6 col-md-6 name">
-                          <input type="text" class="form-control" id="name" placeholder="Enter Name" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter Name'">
+                          <input type="text" class="form-control" name="name" placeholder="Enter Name" 
+                          onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter Name'">
+                          <x-input-error :messages="$errors->get('name')" class="mt-2" />
+
                         </div>
                         <div class="form-group col-lg-6 col-md-6 email">
-                          <input type="email" class="form-control" id="email" placeholder="Enter email address" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter email address'">
+                          <input type="email" class="form-control" name="email" placeholder="Enter email address" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter email address'">
+                          <x-input-error :messages="$errors->get('email')" class="mt-2" />
+
                         </div>										
                       </div>
                       <div class="form-group">
-                          <input type="text" class="form-control" id="subject" placeholder="Subject" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Subject'">
-                      </div>
+                          <input type="text" class="form-control" name="subject" placeholder="Subject" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Subject'">
+                          <x-input-error :messages="$errors->get('subject')" class="mt-2" />
+
+                        </div>
                       <div class="form-group">
                           <textarea class="form-control mb-10" rows="5" name="message" placeholder="Messege" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Messege'" required=""></textarea>
-                      </div>
-                      <a href="#" class="button submit_btn">Post Comment</a>	
+                          <x-input-error :messages="$errors->get('message')" class="mt-2" />
+
+                        </div>
+                      <button type="submit" class="button submit_btn">Post Comment</=>	
                   </form>
               </div>
         </div>
 
-        <!-- Start Blog Post Siddebar -->
-       @include('theme.partials.side')
-        <!-- End Blog Post Siddebar -->
+        @include('theme.partials.side')
       </div>
   </section>
  

@@ -1,3 +1,10 @@
+
+@php
+use App\Models\Category;
+
+  $data=Category::get();
+@endphp
+
 <header class="header_area">
     <div class="main_menu">
       <nav class="navbar navbar-expand-lg navbar-light">
@@ -16,28 +23,48 @@
               <li class="nav-item @yield('category.active') submenu dropdown">
                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                   aria-expanded="false">Categories</a>
-                <ul class="dropdown-menu">
-                  <li class="nav-item"><a class="nav-link" href="{{route('theme.category')}}">Food</a></li>
-                  <li class="nav-item"><a class="nav-link" href="{{route('theme.category')}}">Bussiness</a></li>
-                  <li class="nav-item"><a class="nav-link" href="{{route('theme.category')}}">Travel</a></li>
-                </ul>
+                  <ul class="dropdown-menu">
+                @if (count($data)>0)
+                    @foreach ($data as $val)
+                    <li class="nav-item"><a class="nav-link" href="{{route('theme.category',['id'=>$val->id])}}">{{$val->name}}</a></li>
+                    @endforeach
+                @endif
+               </ul>
+             
               </li>
               <li class="nav-item @yield('contact.active')"><a class="nav-link" href="{{route('theme.contact')}}">Contact</a></li>
             </ul>
-            
-            <!-- Add new blog -->
-            <a href="#" class="btn btn-sm btn-primary mr-2">Add New</a>
+            @if (Auth::check())
+                <!-- Add new blog -->
+            <a href="{{route('blogs.create')}}" class="btn btn-sm btn-primary mr-2">Add New</a>
             <!-- End - Add new blog -->
-
+            @endif
+          
+              
             <ul class="nav navbar-nav navbar-right navbar-social">
-              <a href="#" class="btn btn-sm btn-warning">Register / Login</a>
-              <!-- <li class="nav-item submenu dropdown">
-                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                  aria-expanded="false">Welcome User</a>
-                <ul class="dropdown-menu">
-                  <li class="nav-item"><a class="nav-link" href="blog-details.html">My Blogs</a></li>
-                </ul>
-              </li> -->
+              @if (!Auth::check())
+              <a href="{{route('register')}}" class="btn btn-sm btn-warning">Register / Login</a>
+                @else
+                <li class="nav-item submenu dropdown">
+                  <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                    aria-expanded="false">{{Auth::user()->name}}</a>
+                  <ul class="dropdown-menu">
+                    <li class="nav-item"><a class="nav-link" href="{{route('blogs.my-blog')}}">My Blog</a></li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                          Logout
+                      </a>
+                  </li>
+                  <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                      @csrf
+                  </form>
+                  
+                    @csrf
+                  </ul>
+                </li> 
+              @endif
+              
+             
             </ul>
           </div> 
         </div>
