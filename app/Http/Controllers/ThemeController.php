@@ -9,8 +9,9 @@ use Illuminate\Http\Request;
 class ThemeController extends Controller
 {
    public function index(){
-    $data = Blog::paginate(4); // استخدم paginate بدلاً من pagination
-       return view('theme.index', compact('data')); // تمرير البيانات إلى العرض
+    $data = Blog::latest()->paginate(4); // استخدم paginate بدلاً من pagination
+    $recent_data=Blog::orderBy('created_at','desc')->take(5)->get();
+       return view('theme.index', compact('data','recent_data')); // تمرير البيانات إلى العرض
 
    }
    public function category($id){

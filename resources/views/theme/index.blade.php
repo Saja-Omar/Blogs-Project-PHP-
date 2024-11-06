@@ -28,72 +28,28 @@
     <section>
       <div class="container">
         <div class="owl-carousel owl-theme blog-slider">
-          <div class="card blog__slide text-center">
-            <div class="blog__slide__img">
-              <img class="card-img rounded-0" src="{{asset('assets')}}/img/blog/blog-slider/blog-slide1.png" alt="">
+          @if (count($recent_data)>0)
+            @foreach ($recent_data as $recent)
+            <div class="card blog__slide text-center">
+              <div class="blog__slide__img">
+                <img class="card-img rounded-0" src="{{asset('storage')}}/blogs/{{$recent->image}}" alt="" height="250px">
+              </div>
+              <div class="blog__slide__content">
+                <a class="blog__slide__label" href="{{route('theme.category',['id'=>$recent->id])}}">{{$recent->category->name}}</a>
+                <h3><a href="{{route('blogs.show',['blog'=>$recent->id])}}">{{$recent->name}}</a></h3>
+                <p>{{$recent->created_at->format('d M Y')}}</p>
+              </div>
             </div>
-            <div class="blog__slide__content">
-              <a class="blog__slide__label" href="#">Fashion</a>
-              <h3><a href="#">New york fashion week's continued the evolution</a></h3>
-              <p>2 days ago</p>
-            </div>
-          </div>
-          <div class="card blog__slide text-center">
-            <div class="blog__slide__img">
-              <img class="card-img rounded-0" src="{{asset('assets')}}/img/blog/blog-slider/blog-slide2.png" alt="">
-            </div>
-            <div class="blog__slide__content">
-              <a class="blog__slide__label" href="#">Fashion</a>
-              <h3><a href="#">New york fashion week's continued the evolution</a></h3>
-              <p>2 days ago</p>
-            </div>
-          </div>
-          <div class="card blog__slide text-center">
-            <div class="blog__slide__img">
-              <img class="card-img rounded-0" src="{{asset('assets')}}/img/blog/blog-slider/blog-slide3.png" alt="">
-            </div>
-            <div class="blog__slide__content">
-              <a class="blog__slide__label" href="#">Fashion</a>
-              <h3><a href="#">New york fashion week's continued the evolution</a></h3>
-              <p>2 days ago</p>
-            </div>
-          </div>
-          <div class="card blog__slide text-center">
-            <div class="blog__slide__img">
-              <img class="card-img rounded-0" src="{{asset('assets')}}/img/blog/blog-slider/blog-slide1.png" alt="">
-            </div>
-            <div class="blog__slide__content">
-              <a class="blog__slide__label" href="#">Fashion</a>
-              <h3><a href="#">New york fashion week's continued the evolution</a></h3>
-              <p>2 days ago</p>
-            </div>
-          </div>
-          <div class="card blog__slide text-center">
-            <div class="blog__slide__img">
-              <img class="card-img rounded-0" src="{{asset('assets')}}/img/blog/blog-slider/blog-slide2.png" alt="">
-            </div>
-            <div class="blog__slide__content">
-              <a class="blog__slide__label" href="#">Fashion</a>
-              <h3><a href="#">New york fashion week's continued the evolution</a></h3>
-              <p>2 days ago</p>
-            </div>
-          </div>
-          <div class="card blog__slide text-center">
-            <div class="blog__slide__img">
-              <img class="card-img rounded-0" src="{{asset('assets')}}/img/blog/blog-slider/blog-slide3.png" alt="">
-            </div>
-            <div class="blog__slide__content">
-              <a class="blog__slide__label" href="#">Fashion</a>
-              <h3><a href="#">New york fashion week's continued the evolution</a></h3>
-              <p>2 days ago</p>
-            </div>
-          </div>
+            @endforeach
+          @endif
+          
         </div>
       </div>
     </section>
     <!--================ Blog slider end =================-->  
 
     <!--================ Start Blog Post Area =================-->
+ 
     <section class="blog-post-area section-margin mt-4">
       <div class="container">
         <div class="row">
@@ -113,7 +69,8 @@
                   <a href="{{route('blogs.show',['blog'=>$value])}}">
                     <h3>{{$value->name}}</h3>
                   </a>
-                  <p>{{$value->description}}</p>
+                  <!-- Displaying only part of the article -->
+                  <p>{{ Str::limit($value->description, 150) }}</p>
                   <a class="button" href="{{ route('blogs.show', ['blog' => $value]) }}">Read More <i class="ti-arrow-right"></i></a>
                 </div>
               </div>
@@ -125,10 +82,12 @@
               </div>
             </div>
           </div>
-
+          
           @include('theme.partials.side')
         </div>
+      </div>
     </section>
+    
     <!--================ End Blog Post Area =================-->
   </main>
 
@@ -138,4 +97,6 @@
 
 </body>
 </html>
-@endsection
+@endsection  
+
+

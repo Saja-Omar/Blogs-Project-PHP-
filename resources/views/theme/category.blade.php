@@ -1,4 +1,4 @@
-@extends('theme.master')
+{{-- @extends('theme.master')
 @section('title','Categoryies')
 @section('category.active','active')
 @section('content')
@@ -122,4 +122,67 @@
 </body>
 </html>
  
-@endsection 
+@endsection  --}}
+
+
+
+
+@extends('theme.master')
+@section('title','Categories')
+@section('category.active','active')
+@section('content')
+
+<body>
+  <!--================ Hero sm Banner start =================-->        
+  @include('theme.partials.hero',['title'=>$d])
+  <!--================ Hero sm Banner end =================-->      
+
+  <!--================ Start Blog Post Area =================-->
+  <section class="blog-post-area section-margin">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8">
+          <div class="row">
+            @if(!empty($data))
+              @foreach ($data as $val)
+                <div class="col-md-6">
+                  <div class="single-recent-blog-post card-view">
+                    <div class="thumb">
+                      <img class="card-img rounded-0" src="{{ asset('storage/blogs/'.$val->image) }}" alt="{{ $val->name }}">
+                      <ul class="thumb-info">
+                        <li><a href="#"><i class="ti-user"></i>{{ $val->user->name }}</a></li>
+                        <li><a href="#"><i class="ti-themify-favicon"></i>2 Comments</a></li>
+                      </ul>
+                    </div>
+                    <div class="details mt-20">
+                      <a href="{{ route('blogs.show', ['blog' => $val]) }}">
+                        <h3>{{ $val->name }}</h3>
+                      </a>
+                      <!-- عرض جزء من الوصف فقط -->
+                      <p>{{ Str::limit($val->description, 150) }}</p>
+                      <!-- رابط "قراءة المزيد" -->
+                      <a class="button" href="{{ route('blogs.show', ['blog' => $val]) }}">Read More <i class="ti-arrow-right"></i></a>
+                    </div>
+                  </div>
+                </div>
+              @endforeach
+            @endif
+          </div>
+
+          <!-- Pagination -->
+          <div class="row">
+            <div class="col-lg-12">
+              {{ $data->links('pagination::bootstrap-4') }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Sidebar -->
+        @include('theme.partials.side')
+      </div>
+    </div>
+  </section>
+  <!--================ End Blog Post Area =================-->
+</body>
+
+@endsection
